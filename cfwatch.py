@@ -57,7 +57,7 @@ def main():
                         level=logging.INFO)
 
     observer = Observer()
-    observer.schedule(CloudFlareMonitorHandler(args.email, args.token, args.zone, args.prefix, args.dir), args.dir)
+    observer.schedule(CloudFlareMonitorHandler(args.email, args.token, args.zone, args.prefix, args.dir), args.dir, recursive=True)
     observer.start()
     try:
         while True:
