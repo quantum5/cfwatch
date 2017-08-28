@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import logging
 import os
 from threading import Lock, Event, Thread
@@ -136,12 +137,15 @@ class CloudFlareMonitorHandler(FileSystemEventHandler):
 def main():
     import argparse
 
-    parser = argparse.ArgumentParser(description='Purges CloudFlare on file change.')
-    parser.add_argument('email', help='CloudFlare login email')
-    parser.add_argument('token', help='CloudFlare API key')
-    parser.add_argument('zone', help='CloudFlare zone')
-    parser.add_argument('prefix', help='CloudFlare path prefix')
-    parser.add_argument('dir', help='directory to watch', nargs='?', default='.')
+    parser = argparse.ArgumentParser(description='Purges CloudFlare on local file change.')
+    parser.add_argument('email', help='CloudFlare login email (e.g. user@example.com)')
+    parser.add_argument('token', help='CloudFlare API key (e.g. c2547eb745079dac9320b638f5e225cf483cc5cfdda41)')
+    parser.add_argument('zone', help='CloudFlare zone (e.g. example.com)')
+    parser.add_argument('prefix', help='CloudFlare path prefix (e.g. http://example.com/)')
+    parser.add_argument('dir', nargs='?', default='.',
+                        help='directory to watch, i.e. file.txt this directory '
+                             'is http://example.com/file.txt',
+                        )
     parser.add_argument('-l', '--log', help='log file')
     args = parser.parse_args()
 
