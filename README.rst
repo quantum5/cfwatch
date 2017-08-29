@@ -35,3 +35,4 @@ Usage
     -l LOG, --log LOG  log file
 
 .. |pypi| image:: https://img.shields.io/pypi/v/cfwatch.svg
+   :target: https://pypi.python.org/pypi/cfwatch
