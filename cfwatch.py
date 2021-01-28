@@ -1,6 +1,9 @@
 #!/usr/bin/env python
+from __future__ import print_function
+
 import logging
 import os
+import sys
 from threading import Lock, Event, Thread
 
 try:
@@ -138,8 +141,6 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description='Purges CloudFlare on local file change.')
-    parser.add_argument('email', help='CloudFlare login email (e.g. user@example.com)')
-    parser.add_argument('token', help='CloudFlare API key (e.g. c2547eb745079dac9320b638f5e225cf483cc5cfdda41)')
     parser.add_argument('zone', help='CloudFlare zone (e.g. example.com)')
     parser.add_argument('prefix', help='CloudFlare path prefix (e.g. http://example.com/)')
     parser.add_argument('dir', nargs='?', default='.',
@@ -151,7 +152,20 @@ def main():
 
     logging.basicConfig(filename=args.log, format='%(asctime)-15s %(message)s', level=logging.INFO)
 
-    monitor = CloudFlareMonitorHandler(args.email, args.token, args.zone, args.prefix, args.dir)
+    email = os.environ.get('CFWATCH_EMAIL')
+    token = os.environ.get('CFWATCH_TOKEN')
+
+    if not email:
+        print('CFWATCH_EMAIL environment variable must be set to CloudFlare login email '
+              '(e.g. user@example.com)', file=sys.stderr)
+        sys.exit(2)
+
+    if not token:
+        print('CFWATCH_TOKEN environment must set to CloudFlare API key '
+              '(e.g. c2547eb745079dac9320b638f5e225cf483cc5cfdda41)', file=sys.stderr)
+        sys.exit(2)
+
+    monitor = CloudFlareMonitorHandler(email, token, args.zone, args.prefix, args.dir)
     monitor.run()
 
 

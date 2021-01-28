@@ -8,7 +8,7 @@ with open(os.path.join(os.path.dirname(__file__), 'README.rst')) as f:
 
 setup(
     name='cfwatch',
-    version='0.1.0',
+    version='0.2.0',
     description="Automagically purges CloudFlare's cache when local files are updated.",
     long_description=readme,
     author='Quantum',
