@@ -24,14 +24,13 @@ log = logging.getLogger('cfwatch')
 
 
 class CloudFlareMonitorHandler(FileSystemEventHandler):
-    def __init__(self, email, token, zone, prefix, dir='.'):
+    def __init__(self, token, zone, prefix, dir='.'):
         self.session = requests.Session()
         self.to_purge = set()
         self.queue_lock = Lock()
         self._trigger = Event()
         self._stop = False
 
-        self.email = email
         self.token = token
         self.zone = self._get_zone(zone)
         self.prefix = prefix
@@ -71,8 +70,7 @@ class CloudFlareMonitorHandler(FileSystemEventHandler):
 
     def cf_request(self, *args, **kwargs):
         headers = {
-            'X-Auth-Email': self.email,
-            'X-Auth-Key': self.token,
+            'Authorization': 'Bearer %s' % (self.token,),
         }
         headers.update(kwargs.pop('headers', {}))
         kwargs['headers'] = headers
@@ -152,20 +150,13 @@ def main():
 
     logging.basicConfig(filename=args.log, format='%(asctime)-15s %(message)s', level=logging.INFO)
 
-    email = os.environ.get('CFWATCH_EMAIL')
     token = os.environ.get('CFWATCH_TOKEN')
 
-    if not email:
-        print('CFWATCH_EMAIL environment variable must be set to CloudFlare login email '
-              '(e.g. user@example.com)', file=sys.stderr)
-        sys.exit(2)
-
     if not token:
-        print('CFWATCH_TOKEN environment must set to CloudFlare API key '
-              '(e.g. c2547eb745079dac9320b638f5e225cf483cc5cfdda41)', file=sys.stderr)
+        print('CFWATCH_TOKEN environment must set to CloudFlare API token', file=sys.stderr)
         sys.exit(2)
 
-    monitor = CloudFlareMonitorHandler(email, token, args.zone, args.prefix, args.dir)
+    monitor = CloudFlareMonitorHandler(token, args.zone, args.prefix, args.dir)
     monitor.run()
 
 

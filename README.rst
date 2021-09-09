@@ -33,8 +33,7 @@ Usage
 
 When running ``cfwatch``, you must set the following environment variables:
 
-* ``CFWATCH_EMAIL`` to your CloudFlare login email (e.g. user@example.com)
-* ``CFWATCH_TOKEN`` to your CloudFlare API key
+* ``CFWATCH_TOKEN`` to your CloudFlare API token (not the legacy API key)
 
 .. |pypi| image:: https://img.shields.io/pypi/v/cfwatch.svg
    :target: https://pypi.python.org/pypi/cfwatch
